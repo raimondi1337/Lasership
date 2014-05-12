@@ -10,11 +10,13 @@ app.lazer = {
 		// variable properties
 		renderer: undefined,
 		scene: undefined,
-		camera: undefined,
+		cam: undefined,
 		myobjects: [],
 		paused: false,
 		dt: 1/60,
 		controls: undefined,
+		light: undefined,
+		bullets: [],
 		
 		
     	init : function() {
@@ -22,6 +24,13 @@ app.lazer = {
 			this.setupThreeJS();
 			this.setupWorld();
 			this.update();
+			
+			/*this.click : function(e) {
+				e.preventDefault();
+				if (e.which === 1) { // Left click only, courtesy of jQuery
+					createBullet(); // Shoot a bullet. Described later
+				}
+			};*/
     	},
     	
     	
@@ -39,25 +48,31 @@ app.lazer = {
 		this.controls.update(this.dt);
 		
 		// DRAW	
-		this.renderer.render(this.scene, this.camera);
+		this.renderer.render(this.scene, this.cam);
+		
+		
+		
 		
 	},
 	
 	setupThreeJS: function() {
 				this.scene = new THREE.Scene();
-				this.scene.fog = new THREE.FogExp2(0x9db3b5, 0.002);
+				
+				this.light = new THREE.HemisphereLight( 'yellow', '#ffAAAA', 10); 
+				this.light.position.set( 50, 50, 50 ); 
+				this.scene.add( this.light );
 
-				this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
-				this.camera.position.y = 400;
-				this.camera.position.z = 400;
-				this.camera.rotation.x = -45 * Math.PI / 180;
+				this.cam = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+				this.cam.position.y = 400;
+				this.cam.position.z = 400;
+				this.cam.rotation.x = -45 * Math.PI / 180;
 
 				this.renderer = new THREE.WebGLRenderer({antialias: true});
 				this.renderer.setSize( window.innerWidth, window.innerHeight );
 				this.renderer.shadowMapEnabled = true;
 				document.body.appendChild(this.renderer.domElement );
 
-				this.controls = new THREE.FirstPersonControls(this.camera);
+				this.controls = new THREE.FirstPersonControls(this.cam);
 				this.controls.movementSpeed = 500;
 				this.controls.lookSpeed = 0.1;
 				this.controls.autoForward = false;
@@ -65,19 +80,19 @@ app.lazer = {
 			
 	setupWorld: function() {
 				var geo = new THREE.PlaneGeometry(2000, 2000, 40, 40);
-				var mat = new THREE.MeshPhongMaterial({color: 'green', overdraw: false});
+				var mat = new THREE.MeshPhongMaterial({color: 'green'});
 				var floor = new THREE.Mesh(geo, mat);
 				floor.rotation.x = -0.5 * Math.PI;
 				floor.receiveShadow = true;
 				this.scene.add(floor);
 			
 				var p1geo = new THREE.CubeGeometry(100,100,100);
-				var p1mat = new THREE.MeshBasicMaterial( { color: 'red' } ); 
+				var p1mat = new THREE.MeshPhongMaterial( { color: 'red' } ); 
 				var player1 = new THREE.Mesh( p1geo, p1mat ); 
 				this.scene.add( player1 );
 
 				var p2geo = new THREE.CubeGeometry(100,100,100);
-				var p2mat = new THREE.MeshBasicMaterial( { color: 'blue' } ); 
+				var p2mat = new THREE.MeshPhongMaterial( { color: 'blue' } ); 
 				var player2 = new THREE.Mesh( p2geo, p2mat ); 
 				this.scene.add( player2 ); 
 			
@@ -91,6 +106,39 @@ app.lazer = {
 				
 				//move pivot point to bottom of cube instead of center
 				//geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));
+			},
+			
+			
+			createBullet: function(obj) {
+				var sphereMaterial = new THREE.MeshBasicMaterial({color: 'red'});
+				var sphereGeo = new THREE.SphereGeometry(50, 6, 6);
+				if (this.obj === undefined) {
+					this.obj = this.cam;
+				}
+				var sphere = new THREE.Mesh(sphereGeo, sphereMaterial);
+				this.sphere.position.set(this.obj.position.x, this.obj.position.y * 0.8, this.obj.position.z);
+			 
+				if (this.obj instanceof THREE.Camera) {
+					var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
+					this.projector.unprojectVector(this.vector, this.obj);
+					this.sphere.ray = new THREE.Ray(
+							this.obj.position,
+							this.vector.subSelf(this.obj.position).normalize()
+					);
+				}
+				else {
+					var vector = this.cam.position.clone();
+					this.sphere.ray = new THREE.Ray(
+							this.obj.position,
+							this.vector.subSelf(this.obj.position).normalize()
+					);
+				}
+				this.sphere.owner = this.obj;
+			 
+				this.bullets.push(sphere);
+				this.scene.add(sphere);
+			 
+				return this.sphere;
 			},
 
 	
