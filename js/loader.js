@@ -39,7 +39,7 @@ app.keydown = [];
 	}
 	
 	function handleComplete(e){
-		app.city.init();
+		//app.lazer.init();
 	}
 	
 	// when the loading is complete, this function will be called
