@@ -17,13 +17,14 @@ app.lazer = {
 		controls: undefined,
 		light: undefined,
 		bullets: [],
+		asteroids: [],
 		sphere: undefined,
 		BulletMoveSpeed: 5000,
 		projector: undefined,
+		originPoint: new THREE.Vector3(0, 0, 0),
 		
 		
     	init : function() {
-			console.log('init called');
 			this.setupThreeJS();
 			this.setupWorld();
 			this.update();
@@ -32,7 +33,6 @@ app.lazer = {
 				e.preventDefault();
 				if (e.which === 1) { // Left click only, courtesy of jQuery
 					app.lazer.createBullet(); // Shoot a bullet. Described later
-					console.log(app.lazer.bullets.length);
 				}
 			});
     	},
@@ -56,23 +56,33 @@ app.lazer = {
 		
 		var speed = this.dt*this.BulletMoveSpeed;
 			
-			for (var i = this.bullets.length-1; i >= 0; i--) {
-				
-				var b = this.bullets[i], p = b.position, d = b.ray.direction;
-				
-				if (false/*checkWallCollision(p)*/) {
-					this.bullets.splice(i, 1);
-					this.scene.remove(b);
-					continue;
+		for (var i = this.bullets.length-1; i >= 0; i--) {
+			
+			var b = this.bullets[i], p = b.position, d = b.ray.direction;
+
+			for(var j = this.asteroids.length-1;j>=0;j--){
+				var a = this.asteroids[j];
+				if (this.sphereCollision(b,a)){
+					console.log("collided");
+					this.bullets.splice(i,1);
+					this.scene.remove(this.bullets[i]);
+					this.asteroids.splice(j,1);
+					this.scene.remove(this.asteroids[j]);
 				}
-				
-				var hit = false;
-				if (!hit) {
-					b.translateX(speed * d.x);
-					b.translateY(speed * d.y);
-					b.translateZ(speed * d.z);
-				}
-			}	
+			}
+			
+			var hit = false;
+			if (!hit) {
+				b.translateX(speed * d.x);
+				b.translateY(speed * d.y);
+				b.translateZ(speed * d.z);
+			}
+
+			if(this.bullets.length>50){
+				this.bullets.splice(0, 1);
+				this.scene.remove(this.bullets[0]);
+			}
+		}	
 		
 	},
 	
@@ -81,7 +91,7 @@ app.lazer = {
 		
 		this.projector = new THREE.Projector();
 		
-		this.light = new THREE.HemisphereLight( 'yellow', '#ffAAAA', 10); 
+		this.light = new THREE.HemisphereLight( '#999999', '#ffAAAA', 5); 
 		this.light.position.set( 50, 50, 50 ); 
 		this.scene.add( this.light );
 
@@ -98,7 +108,7 @@ app.lazer = {
 		this.controls = new THREE.FirstPersonControls(this.cam);
 		this.controls.movementSpeed = 500;
 		this.controls.lookSpeed = 0.1;
-		this.controls.autoForward = false;
+		this.controls.autoForward = true;
 	},
 			
 	setupWorld: function() {
@@ -109,14 +119,16 @@ app.lazer = {
 		floor.receiveShadow = true;
 		this.scene.add(floor);
 	
-		var p1geo = new THREE.CubeGeometry(100,100,100);
+		var p1geo = new THREE.SphereGeometry(50, 6, 6);
 		var p1mat = new THREE.MeshPhongMaterial( { color: 'red' } ); 
 		var player1 = new THREE.Mesh( p1geo, p1mat ); 
+		this.asteroids.push(player1);
 		this.scene.add( player1 );
 
-		var p2geo = new THREE.CubeGeometry(100,100,100);
+		var p2geo = new THREE.SphereGeometry(50, 6, 6);
 		var p2mat = new THREE.MeshPhongMaterial( { color: 'blue' } ); 
-		var player2 = new THREE.Mesh( p2geo, p2mat ); 
+		var player2 = new THREE.Mesh( p2geo, p2mat );
+		this.asteroids.push(player2); 
 		this.scene.add( player2 ); 
 	
 		player1.position.x = 0;
@@ -168,6 +180,10 @@ app.lazer = {
 	
 	drawPauseScreen: function(){
 		// do something pause-like if you want
+	},
+
+	sphereCollision: function(sphere1,sphere2){
+		return sphere1.position.distanceToSquared(sphere2.position) < 10000;
 	}
 	
 	

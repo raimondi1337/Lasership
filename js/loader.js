@@ -63,12 +63,10 @@ app.keydown = [];
 			
 			// event listeners
 			window.addEventListener("keydown",function(e){
-				console.log("keydown=" + e.keyCode);
 				app.keydown[e.keyCode] = true;
 			});
 				
 			window.addEventListener("keyup",function(e){
-				console.log("keyup=" + e.keyCode);
 				app.keydown[e.keyCode] = false;
 			});
 			

@@ -89,8 +89,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			switch ( event.button ) {
 
-				case 0: this.moveForward = true; break;
-				case 2: this.moveBackward = true; break;
+				//case 0: this.moveForward = true; break;
+				//case 2: this.moveBackward = true; break;
 
 			}
 
@@ -109,8 +109,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			switch ( event.button ) {
 
-				case 0: this.moveForward = false; break;
-				case 2: this.moveBackward = false; break;
+				//case 0: this.moveForward = false; break;
+				//case 2: this.moveBackward = false; break;
 
 			}
 
@@ -122,7 +122,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.onMouseMove = function ( event ) {
 
-		if ( this.domElement === document ) {
+		/*if ( this.domElement === document ) {
 
 			this.mouseX = event.pageX - this.viewHalfX;
 			this.mouseY = event.pageY - this.viewHalfY;
@@ -132,7 +132,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			this.mouseX = event.pageX - this.domElement.offsetLeft - this.viewHalfX;
 			this.mouseY = event.pageY - this.domElement.offsetTop - this.viewHalfY;
 
-		}
+		}*/
 
 	};
 
@@ -209,11 +209,12 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		var actualMoveSpeed = delta * this.movementSpeed;
 
-		if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-		if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+		if (this.autoForward) this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
+		if ( this.moveForward ) this.lat++;
+		if ( this.moveBackward ) this.lat--;
 
-		if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
-		if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
+		if ( this.moveLeft ) this.lon--;
+		if ( this.moveRight ) this.lon++;
 
 		if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
 		if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
