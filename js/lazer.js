@@ -34,6 +34,7 @@ app.lazer = {
 				e.preventDefault();
 				if (e.which === 1) { // Left click only, courtesy of jQuery
 					app.lazer.createBullet(); // Shoot a bullet. Described later
+					createjs.Sound.play("bullet", {volume:0.5});
 				}
 			});
     	},
@@ -71,6 +72,7 @@ app.lazer = {
 					this.bullets.splice(i,1);
 					this.scene.remove(this.asteroids[j]);
 					this.asteroids.splice(j,1);
+					createjs.Sound.play("splode", {volume:0.5});
 				}
 			}
 		}
@@ -91,9 +93,8 @@ app.lazer = {
 		for(var j = this.asteroids.length-1;j>=0;j--){
 			var a = this.asteroids[j];
 		
-			/*a.translateX(speed/2 * a.ray.direction.x);
-			a.translateY(speed/2 * a.ray.direction.y);
-			a.translateZ(speed/2 * a.ray.direction.z);*/
+			a.translateX(speed/15 * a.ray.direction.x);
+
 			a.rotation.x += (Math.random()*(Math.PI /180));
 			a.rotation.y += (Math.random()*(Math.PI /180));
 			a.rotation.z += (Math.random()*(Math.PI /180));
@@ -151,6 +152,11 @@ app.lazer = {
 
 	sphereCollision: function(sphere1,sphere2){
 		return sphere1.position.distanceTo(sphere2.position) < (sphere1.radius+sphere2.radius);
+	},
+	
+	startSoundtrack: function(){
+		createjs.Sound.stop();
+		createjs.Sound.play("loop", {loop:-1, volume:0.2});
 	}
 	
 	
