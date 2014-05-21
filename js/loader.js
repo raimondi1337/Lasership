@@ -40,6 +40,7 @@ app.keydown = [];
 	queue.loadFile("js/lazer.js");
 	queue.loadFile("js/bullet.js");
 	queue.loadFile("js/asteroid.js");
+	queue.loadFile("js/hud.js");
 	queue.loadFile(app.IMAGES['asteroidImage']);
 	queue.loadFile(app.IMAGES['bulletImage']);
 
