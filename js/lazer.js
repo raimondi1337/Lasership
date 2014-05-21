@@ -21,7 +21,7 @@ app.lazer = {
 		sphere: undefined,
 		BulletMoveSpeed: 5000,
 		projector: undefined,
-		originPoint: new THREE.Vector3(0, 0, 0),
+		skybox: undefined,
 		
 		
     	init : function() {
@@ -63,7 +63,6 @@ app.lazer = {
 			for(var j = this.asteroids.length-1;j>=0;j--){
 				var a = this.asteroids[j];
 				if (this.sphereCollision(b,a)){
-					console.log("collided");
 					this.bullets.splice(i,1);
 					this.scene.remove(this.bullets[i]);
 					this.asteroids.splice(j,1);
@@ -82,7 +81,7 @@ app.lazer = {
 				this.bullets.splice(0, 1);
 				this.scene.remove(this.bullets[0]);
 			}
-		}	
+		}
 		
 	},
 	
@@ -118,63 +117,20 @@ app.lazer = {
 		floor.rotation.x = -0.5 * Math.PI;
 		floor.receiveShadow = true;
 		this.scene.add(floor);
-	
-		var p1geo = new THREE.SphereGeometry(50, 6, 6);
-		var p1mat = new THREE.MeshPhongMaterial( { color: 'red' } ); 
-		var player1 = new THREE.Mesh( p1geo, p1mat ); 
-		this.asteroids.push(player1);
-		this.scene.add( player1 );
 
-		var p2geo = new THREE.SphereGeometry(50, 6, 6);
-		var p2mat = new THREE.MeshPhongMaterial( { color: 'blue' } ); 
-		var player2 = new THREE.Mesh( p2geo, p2mat );
-		this.asteroids.push(player2); 
-		this.scene.add( player2 ); 
-	
-		player1.position.x = 0;
-		player1.position.y = 100;
-		player1.position.z = 900;				
-	
-		player2.position.x = 0;
-		player2.position.y = 100;
-		player2.position.z = -900;
-		
-		//move pivot point to bottom of cube instead of center
-		//geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));
+		for(var i=0;i<500;i++){
+			var a = new app.Asteroid();
+
+			this.asteroids.push(a.sphere);
+			this.scene.add(a.sphere);
+		}
 	},
 			
 			
 	createBullet: function(obj) {
-		var sphereMaterial = new THREE.MeshBasicMaterial({color: 'red'});
-		var sphereGeo = new THREE.SphereGeometry(50, 6, 6);
-		if (this.obj === undefined) {
-			this.obj = this.cam;
-		}
-		var sphere = new THREE.Mesh(sphereGeo, sphereMaterial);
-		sphere.position.set(this.obj.position.x, this.obj.position.y * .75, this.obj.position.z);
-	 
-		if (this.obj instanceof THREE.Camera) {
-			var vector = new THREE.Vector3(this.mouseX, this.mouseY, 1);
-			this.projector.unprojectVector(vector, this.obj);
-			sphere.ray = new THREE.Ray(
-					this.obj.position,
-					vector.sub(this.obj.position).normalize()
-			);
-			
-		}
-		else {
-			var vector = this.cam.position.clone();
-			sphere.ray = new THREE.Ray(
-					this.obj.position,
-					vector.sub(this.obj.position).normalize()
-			);
-		}
-		sphere.owner = this.obj;
-	 
-		this.bullets.push(sphere);
-		this.scene.add(sphere);
-	 
-		return this.sphere;
+		var b = new app.Bullet(this.cam);
+		this.bullets.push(b.sphere);
+		this.scene.add(b.sphere);
 	},
 
 	
@@ -183,7 +139,7 @@ app.lazer = {
 	},
 
 	sphereCollision: function(sphere1,sphere2){
-		return sphere1.position.distanceToSquared(sphere2.position) < 10000;
+		return sphere1.position.distanceToSquared(sphere2.position) < sphere1.radius+sphere2.radius;
 	}
 	
 	

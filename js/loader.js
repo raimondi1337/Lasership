@@ -33,6 +33,9 @@ app.keydown = [];
 	queue.loadFile("js/lib/three.min.js");
 	queue.loadFile("js/lib/FirstPersonControls.js");
 	queue.loadFile("js/lazer.js");
+	queue.loadFile("js/bullet.js");
+	queue.loadFile("js/asteroid.js");
+
 	
 	function handleFileLoad(e){
 		console.log(e + " loaded");
