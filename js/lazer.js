@@ -23,6 +23,7 @@ app.lazer = {
 		projector: undefined,
 		skybox: undefined,
 		score: 0,
+		worldRadius: 10000,
 		
 		
     	init : function() {
@@ -85,20 +86,36 @@ app.lazer = {
 			b.translateZ(speed * d.z);
 			
 			if(this.bullets.length>50){
-				this.bullets.splice(0, 1);
 				this.scene.remove(this.bullets[0]);
+				this.bullets.splice(0, 1);
 			}
 		}
 	
 		for(var j = this.asteroids.length-1;j>=0;j--){
 			var a = this.asteroids[j];
-		
-			a.translateX(speed/15 * a.ray.direction.x);
 
 			a.rotation.x += (Math.random()*(Math.PI /180));
 			a.rotation.y += (Math.random()*(Math.PI /180));
 			a.rotation.z += (Math.random()*(Math.PI /180));
+
+			a.translateX(speed/15 * a.ray.direction.x);
+
+			if(a.position.distanceToSquared(this.skybox.position) > Math.pow(this.worldRadius,2)){
+				this.scene.remove(this.asteroids[j]);
+				this.asteroids.splice(j,1);
+			}
 		}
+
+		if(this.asteroids.length < 50){
+			var newA = new app.Asteroid(this.renderer, this.cam, this.scene);
+
+			this.asteroids.push(newA.sphere);
+			this.scene.add(newA.sphere);
+		}
+
+		this.skybox.position.x=this.cam.position.x;
+		this.skybox.position.z=this.cam.position.z;
+		this.skybox.position.y=this.cam.position.y;
 
 		app.hud.draw();
 	},
@@ -130,12 +147,15 @@ app.lazer = {
 			
 	setupWorld: function() {
 		app.hud.setup();
-		for(var i=0;i<50;i++){
-			var a = new app.Asteroid(this.renderer, this.cam, this.scene);
 
-			this.asteroids.push(a.sphere);
-			this.scene.add(a.sphere);
-		}
+		//skybox
+		var texture = THREE.ImageUtils.loadTexture('images/galaxy.jpg');
+		var geo = new THREE.SphereGeometry(this.worldRadius, 10, 10);
+		var mat = new THREE.MeshBasicMaterial( { map: texture } );
+
+		this.skybox = new THREE.Mesh(geo, mat);
+		this.skybox.material.side = THREE.BackSide
+		this.scene.add(this.skybox);
 	},
 			
 			
@@ -158,6 +178,4 @@ app.lazer = {
 		createjs.Sound.stop();
 		createjs.Sound.play("loop", {loop:-1, volume:0.2});
 	}
-	
-	
 };
