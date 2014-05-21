@@ -58,7 +58,8 @@ app.lazer = {
 		
 		var speed = this.dt*this.BulletMoveSpeed;
 		
-		
+		//collision detection
+		//loops through asteroids and compares to each bullet to check for collision
 		for(var j = this.asteroids.length-1;j>=0;j--){
 			var a = this.asteroids[j];		
 			
@@ -77,6 +78,7 @@ app.lazer = {
 			}
 		}
 		
+		//moves the bullets and deletes some if there are too many
 		for (var i = this.bullets.length-1; i >= 0; i--) {
 			var b = this.bullets[i], d = b.ray.direction;
 			
@@ -89,7 +91,8 @@ app.lazer = {
 				this.scene.remove(this.bullets[0]);
 			}
 		}
-	
+		
+		//moves the asteroids	
 		for(var j = this.asteroids.length-1;j>=0;j--){
 			var a = this.asteroids[j];
 		
@@ -102,7 +105,7 @@ app.lazer = {
 
 		app.hud.draw();
 	},
-	
+	//sets up everything we need
 	setupThreeJS: function() {
 		this.scene = new THREE.Scene();
 		
@@ -127,7 +130,7 @@ app.lazer = {
 		this.controls.lookSpeed = 0.1;
 		this.controls.autoForward = true;
 	},
-			
+	//set up our environment by spawning asteroids
 	setupWorld: function() {
 		app.hud.setup();
 		for(var i=0;i<50;i++){
@@ -138,7 +141,7 @@ app.lazer = {
 		}
 	},
 			
-			
+	//creates a a bullet and takes in the camera to reference its ray		
 	createBullet: function(obj) {
 		var b = new app.Bullet(this.cam);
 		this.bullets.push(b.sphere);
@@ -149,11 +152,12 @@ app.lazer = {
 	drawPauseScreen: function(){
 		// do something pause-like if you want
 	},
-
+	
+	//collision method
 	sphereCollision: function(sphere1,sphere2){
 		return sphere1.position.distanceTo(sphere2.position) < (sphere1.radius+sphere2.radius);
 	},
-	
+	//soundtrack
 	startSoundtrack: function(){
 		createjs.Sound.stop();
 		createjs.Sound.play("loop", {loop:-1, volume:0.2});
