@@ -19,6 +19,10 @@ app.KEYBOARD = {
 	"KEY_SPACE": 32
 };
 
+app.IMAGES ={
+	asteroidImage: "images/asteroid.jpg"
+};
+
 // properties of app
 app.animationID = undefined;
 app.paused = false;
@@ -35,6 +39,7 @@ app.keydown = [];
 	queue.loadFile("js/lazer.js");
 	queue.loadFile("js/bullet.js");
 	queue.loadFile("js/asteroid.js");
+	queue.loadFile(app.IMAGES['asteroidImage']);
 
 	
 	function handleFileLoad(e){

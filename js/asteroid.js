@@ -8,8 +8,12 @@ app.Asteroid = function(){
 
 	function Asteroid(){
 		var radius=(Math.random()*350)+50;
+		var texture = THREE.ImageUtils.loadTexture('images/asteroid.jpg', {}, function() {
+		renderer.render(scene, camera);
+		});
+		texture.needsUpdate = true;
 		var geo = new THREE.SphereGeometry(radius, 6, 6);
-		var mat = new THREE.MeshPhongMaterial( { color: 'blue' } ); 
+		var mat = new THREE.MeshBasicMaterial( { map: texture } ); 
 		this.sphere = new THREE.Mesh(geo, mat);
 		this.sphere.radius = radius;
 		this.sphere.position.set((Math.random()*10000)-5000,(Math.random()*10000)-5000,(Math.random()*10000)-5000);

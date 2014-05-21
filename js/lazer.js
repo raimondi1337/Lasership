@@ -89,9 +89,12 @@ app.lazer = {
 		for(var j = this.asteroids.length-1;j>=0;j--){
 			var a = this.asteroids[j];
 		
-			a.translateX(speed/2 * a.ray.direction.x);
+			/*a.translateX(speed/2 * a.ray.direction.x);
 			a.translateY(speed/2 * a.ray.direction.y);
-			a.translateZ(speed/2 * a.ray.direction.z);
+			a.translateZ(speed/2 * a.ray.direction.z);*/
+			a.rotation.x += (Math.random()*(Math.PI /180));
+			a.rotation.y += (Math.random()*(Math.PI /180));
+			a.rotation.z += (Math.random()*(Math.PI /180));
 		}
 	},
 	
@@ -100,7 +103,7 @@ app.lazer = {
 		
 		this.projector = new THREE.Projector();
 		
-		this.light = new THREE.HemisphereLight( '#999999', '#ffAAAA', 5); 
+		this.light = new THREE.HemisphereLight( '#999999', '#AAAAAA', 5); 
 		this.light.position.set( 50, 50, 50 ); 
 		this.scene.add( this.light );
 
@@ -117,17 +120,10 @@ app.lazer = {
 		this.controls = new THREE.FirstPersonControls(this.cam);
 		this.controls.movementSpeed = 500;
 		this.controls.lookSpeed = 0.1;
-		this.controls.autoForward = true;
+		this.controls.autoForward = false;
 	},
 			
 	setupWorld: function() {
-		var geo = new THREE.PlaneGeometry(2000, 2000, 40, 40);
-		var mat = new THREE.MeshPhongMaterial({color: 'green'});
-		var floor = new THREE.Mesh(geo, mat);
-		floor.rotation.x = -0.5 * Math.PI;
-		floor.receiveShadow = true;
-		this.scene.add(floor);
-
 		for(var i=0;i<50;i++){
 			var a = new app.Asteroid();
 
