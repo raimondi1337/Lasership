@@ -22,6 +22,7 @@ app.lazer = {
 		BulletMoveSpeed: 5000,
 		projector: undefined,
 		skybox: undefined,
+		score: 0,
 		
 		
     	init : function() {
@@ -65,6 +66,7 @@ app.lazer = {
 				var b = this.bullets[i], d = b.ray.direction;			
 				
 				if (this.sphereCollision(b,a)){
+					this.score+=10;
 					this.scene.remove(this.bullets[i]);
 					this.bullets.splice(i,1);
 					this.scene.remove(this.asteroids[j]);
@@ -96,6 +98,8 @@ app.lazer = {
 			a.rotation.y += (Math.random()*(Math.PI /180));
 			a.rotation.z += (Math.random()*(Math.PI /180));
 		}
+
+		app.hud.draw();
 	},
 	
 	setupThreeJS: function() {
@@ -120,10 +124,11 @@ app.lazer = {
 		this.controls = new THREE.FirstPersonControls(this.cam);
 		this.controls.movementSpeed = 500;
 		this.controls.lookSpeed = 0.1;
-		this.controls.autoForward = false;
+		this.controls.autoForward = true;
 	},
 			
 	setupWorld: function() {
+		app.hud.setup();
 		for(var i=0;i<50;i++){
 			var a = new app.Asteroid(this.renderer, this.cam, this.scene);
 
