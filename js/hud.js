@@ -15,7 +15,10 @@ app.hud = {
 		this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
 		this.ctx.fillStyle='red';
 		this.ctx.font='20px Courier';
-		this.ctx.fillText(app.lazer.score,40,40);
+		this.ctx.textAlign = 'left';
+		this.ctx.fillText("Score: " +app.lazer.score,40,40);
+		this.ctx.textAlign = 'right';
+		this.ctx.fillText("WASD to steer, click to shoot",this.canvas.width-40,40);
 
 		//draw crosshair
 		this.ctx.fillRect((this.canvas.width/2)-2,(this.canvas.height/2)-2,4,4);
