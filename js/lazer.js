@@ -125,7 +125,7 @@ app.lazer = {
 			
 	setupWorld: function() {
 		for(var i=0;i<50;i++){
-			var a = new app.Asteroid();
+			var a = new app.Asteroid(this.renderer, this.cam, this.scene);
 
 			this.asteroids.push(a.sphere);
 			this.scene.add(a.sphere);
