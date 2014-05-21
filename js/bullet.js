@@ -8,7 +8,7 @@ app.Bullet = function(){
 
 	function Bullet(obj){
 		var radius = 50;
-		var texture = THREE.ImageUtils.loadTexture('images/henk.jpg');
+		var texture = THREE.ImageUtils.loadTexture('images/bullet.jpg');
 		texture.needsUpdate = true;
 		var sphereMaterial = new THREE.MeshBasicMaterial({map: texture});
 		var sphereGeo = new THREE.SphereGeometry(radius, 6, 6);

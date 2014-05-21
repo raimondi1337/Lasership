@@ -21,7 +21,7 @@ app.KEYBOARD = {
 
 app.IMAGES ={
 	asteroidImage: "images/asteroid.jpg",
-	bulletImage: "images/henk.jpg"
+	bulletImage: "images/bullet.jpg"
 };
 
 // properties of app
