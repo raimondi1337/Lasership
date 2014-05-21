@@ -63,10 +63,10 @@ app.lazer = {
 			for(var j = this.asteroids.length-1;j>=0;j--){
 				var a = this.asteroids[j];
 				if (this.sphereCollision(b,a)){
-					this.bullets.splice(i,1);
 					this.scene.remove(this.bullets[i]);
-					this.asteroids.splice(j,1);
+					this.bullets.splice(i,1);
 					this.scene.remove(this.asteroids[j]);
+					this.asteroids.splice(j,1);
 				}
 			}
 			
@@ -139,7 +139,7 @@ app.lazer = {
 	},
 
 	sphereCollision: function(sphere1,sphere2){
-		return sphere1.position.distanceToSquared(sphere2.position) < sphere1.radius+sphere2.radius;
+		return sphere1.position.distanceToSquared(sphere2.position) < 50000;
 	}
 	
 	
