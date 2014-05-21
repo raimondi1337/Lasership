@@ -20,7 +20,8 @@ app.KEYBOARD = {
 };
 
 app.IMAGES ={
-	asteroidImage: "images/asteroid.jpg"
+	asteroidImage: "images/asteroid.jpg",
+	bulletImage: "images/henk.jpg"
 };
 
 // properties of app
@@ -40,6 +41,7 @@ app.keydown = [];
 	queue.loadFile("js/bullet.js");
 	queue.loadFile("js/asteroid.js");
 	queue.loadFile(app.IMAGES['asteroidImage']);
+	queue.loadFile(app.IMAGES['bulletImage']);
 
 	
 	function handleFileLoad(e){
@@ -77,6 +79,18 @@ app.keydown = [];
 			window.addEventListener("keyup",function(e){
 				app.keydown[e.keyCode] = false;
 			});
+			
+			createjs.Sound.alternateExtensions = ["mp3"];
+			createjs.Sound.registerSound({id:"loop", src:"sounds/loop.mp3"});
+			createjs.Sound.registerSound({id:"bullet", src:"sounds/bullet.mp3"});
+			createjs.Sound.registerSound({id:"splode", src:"sounds/splode.mp3"});
+			
+			createjs.Sound.addEventListener("fileload", handleFileLoad);
+			
+			function handleFileLoad(e){
+				console.log("Preloaded Sound:", e.id, e.src);
+				if(e.src == "sounds/loop.mp3") app.lazer.startSoundtrack();
+			}
 			
 			
 			// start game
