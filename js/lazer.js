@@ -55,13 +55,15 @@ app.lazer = {
 		this.renderer.render(this.scene, this.cam);
 		
 		var speed = this.dt*this.BulletMoveSpeed;
+		
+		
+		for(var j = this.asteroids.length-1;j>=0;j--){
+			var a = this.asteroids[j];		
 			
-		for (var i = this.bullets.length-1; i >= 0; i--) {
-			
-			var b = this.bullets[i], p = b.position, d = b.ray.direction;
-
-			for(var j = this.asteroids.length-1;j>=0;j--){
-				var a = this.asteroids[j];
+			for (var i = this.bullets.length-1; i >= 0; i--) {
+		
+				var b = this.bullets[i], d = b.ray.direction;			
+				
 				if (this.sphereCollision(b,a)){
 					this.scene.remove(this.bullets[i]);
 					this.bullets.splice(i,1);
@@ -69,20 +71,28 @@ app.lazer = {
 					this.asteroids.splice(j,1);
 				}
 			}
+		}
+		
+		for (var i = this.bullets.length-1; i >= 0; i--) {
+			var b = this.bullets[i], d = b.ray.direction;
 			
-			var hit = false;
-			if (!hit) {
-				b.translateX(speed * d.x);
-				b.translateY(speed * d.y);
-				b.translateZ(speed * d.z);
-			}
-
+			b.translateX(speed * d.x);
+			b.translateY(speed * d.y);
+			b.translateZ(speed * d.z);
+			
 			if(this.bullets.length>50){
 				this.bullets.splice(0, 1);
 				this.scene.remove(this.bullets[0]);
 			}
 		}
+	
+		for(var j = this.asteroids.length-1;j>=0;j--){
+			var a = this.asteroids[j];
 		
+			a.translateX(speed/2 * a.ray.direction.x);
+			a.translateY(speed/2 * a.ray.direction.y);
+			a.translateZ(speed/2 * a.ray.direction.z);
+		}
 	},
 	
 	setupThreeJS: function() {
@@ -118,7 +128,7 @@ app.lazer = {
 		floor.receiveShadow = true;
 		this.scene.add(floor);
 
-		for(var i=0;i<500;i++){
+		for(var i=0;i<50;i++){
 			var a = new app.Asteroid();
 
 			this.asteroids.push(a.sphere);
@@ -139,7 +149,7 @@ app.lazer = {
 	},
 
 	sphereCollision: function(sphere1,sphere2){
-		return sphere1.position.distanceToSquared(sphere2.position) < 50000;
+		return sphere1.position.distanceTo(sphere2.position) < (sphere1.radius+sphere2.radius);
 	}
 	
 	

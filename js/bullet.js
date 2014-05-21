@@ -14,10 +14,10 @@ app.Bullet = function(){
 			obj = app.lazer.cam;
 		}
 		this.sphere = new THREE.Mesh(sphereGeo, sphereMaterial);
-		this.sphere.position.set(obj.position.x, obj.position.y * .75, obj.position.z);
+		this.sphere.position.set(obj.position.x, obj.position.y, obj.position.z);
 	 
 		if (obj instanceof THREE.Camera) {
-			var vector = new THREE.Vector3(0, 0, 0);
+			var vector = new THREE.Vector3(0, 0, 1);
 			app.lazer.projector.unprojectVector(vector, obj);
 			this.sphere.ray = new THREE.Ray(obj.position, vector.sub(obj.position).normalize());
 			
@@ -28,6 +28,11 @@ app.Bullet = function(){
 		}
 		this.sphere.owner = obj;
 		this.sphere.radius=radius;
+		
+		this.sphere.translateX(200 * this.sphere.ray.direction.x);
+		this.sphere.translateY(200 * this.sphere.ray.direction.y);
+		this.sphere.translateZ(200 * this.sphere.ray.direction.z);
+
 	}
 
 	return Bullet; 
